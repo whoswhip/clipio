@@ -1,0 +1,6 @@
+# build output
+dist/
+# dependency directories
+node_modules/
+# IDE - VS Code
+.vscode/

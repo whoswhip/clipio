@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+</head>
+
+<body>
+    <div class="sortation-bar">
+        <a id="settings-button" href="index.html">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-film" viewBox="0 0 16 16">
+                <path
+                    d="M0 1a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm4 0v6h8V1zm8 8H4v6h8zM1 1v2h2V1zm2 3H1v2h2zM1 7v2h2V7zm2 3H1v2h2zm-2 3v2h2v-2zM15 1h-2v2h2zm-2 3v2h2V4zm2 3h-2v2h2zm-2 3v2h2v-2zm2 3h-2v2h2z" />
+            </svg>
+        </a>
+        <p id="appinfo" style="margin-left: auto;">v1</p>
+    </div>
+    <div class="settings-container">
+        <li>
+            <label for="medalPath">Medal.tv Clip Root Directory</label>
+            <div>
+                <input type="text" id="medalPath" name="medalPath" placeholder="C:\Users\Username\Videos\Medal.tv">
+                <button class="text-change" id="MedalChange">Change</button>
+            </div>
+        </li>
+        <li>
+            <label for="nvidiaPath">NVIDIA Shadowplay Clip Root Directory</label>
+            <div>
+                <input type="text" id="nvidiaPath" name="nvidiaPath" placeholder="C:\Users\Username\Videos\Shadowplay">
+                <button class="text-change" id="ShadowplayChange">Change</button>
+            </div>
+        </li>
+        <li>
+            <label for="amdPath">AMD ReLive Clip Root Directory</label>
+            <div>
+                <input type="text" id="amdPath" name="amdPath" placeholder="C:\Users\Username\Videos\ReLive">
+                <button class="text-change" id="ReLiveChange">Change</button>
+            </div>
+        </li>
+        <li>
+            <label for="obsPath">OBS Video Directory</label>
+            <p>OBS will NOT scan sub-directories and will only scan the folder you input.</p>
+            <div>
+                <input type="text" id="obsPath" name="obsPath" placeholder="C:\Users\Username\Videos\OBS">
+                <button class="text-change" id="obsChange">Change</button>
+            </div>
+        </li>
+        <li>
+            <label for="openDataFolder">Open Data Folder</label>
+            <button class="full-button" id="openDataFolder">Open</button>
+        </li>
+    </div>
+</body>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Inter', sans-serif;
+        color: white;
+        scrollbar-width: thin;
+        scrollbar-color: #333 #171717;
+    }
+
+    body {
+        background-color: #0D0D0D;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .sortation-bar {
+        background-color: #171717;
+        display: flex;
+        border-bottom: 1px solid #333;
+        width: 100%;
+        padding: 20px;
+    }
+
+    .sortation-bar button {
+        background-color: #171717;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        margin: 0 10px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.3s background-color;
+    }
+
+    .sortation-bar button:hover {
+        transition: 0.3s background-color;
+        background-color: #333;
+    }
+
+    .sortation-bar a {
+        background-color: #171717;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        margin: 0 10px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.3s background-color;
+    }
+
+    .sortation-bar a:hover {
+        transition: 0.3s background-color;
+        background-color: #333;
+    }
+
+    .sortation-bar p {
+        margin-top: 8px;
+    }
+
+    .sortation-bar input[type="text"] {
+        background-color: #171717;
+        color: white;
+        border: 1px solid #333;
+        padding: 10px;
+        border-radius: 10px;
+        margin-left: auto;
+        transition: 0.3s background-color;
+    }
+
+    .sortation-bar input[type="text"]:focus {
+        outline: none;
+        background-color: #1e1e1e;
+        box-shadow: 0 0 1px #2a2a2a;
+        transition: 0.3s;
+    }
+
+    .sortation-bar svg {
+        fill: white;
+        width: 20px;
+        height: 20px;
+    }
+
+    .separater {
+        border-right: 1px solid #333;
+        width: 1px;
+        height: 20px;
+        margin-right: 15px;
+    }
+
+    .settings-container {
+        width: 100%;
+        padding: 20px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        overflow-y: auto;
+    }
+    input{
+        background-color: #171717;
+        color: white;
+        border: 1px solid #333;
+        padding: 10px;
+        border-radius: 10px;
+        margin-top: 5px;
+        transition: 0.3s background-color;
+        width: calc(100% - 100px);
+    }
+    input:focus{
+        outline: none;
+        background-color: #1e1e1e;
+        box-shadow: 0 0 1px #2a2a2a;
+        transition: 0.3s;
+    }
+    .text-change{
+        width: fit-content;
+    }
+    button{
+        background-color: #171717;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        margin-top: 5px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.3s background-color;
+        border: 1px solid #333;
+    }
+    button:hover{
+        background-color: #1e1e1e;
+        box-shadow: 0 0 1px #2a2a2a;
+        transition: 0.3s;
+    }
+    li {
+        list-style-type: none;
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        background-color: #171717;
+        padding: 20px;
+        border-radius: 10px;
+        width: 100%;
+        border: 1px solid #333;
+    }
+    li div{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+    li p {
+        font-size: smaller;
+        font-weight: 600;
+        color: #999;
+    }
+</style>
+<script>
+    document.getElementById("settings-button").addEventListener("click", function () {
+        window.location.href = "index.html";
+    });
+    document.getElementById("MedalChange").addEventListener("click", function () {
+        var path = document.getElementById("medalPath").value;
+        changePath("medal", path);
+    });
+    document.getElementById("ShadowplayChange").addEventListener("click", function () {
+        var path = document.getElementById("nvidiaPath").value;
+        changePath("shadowplay", path);
+    });
+    document.getElementById("ReLiveChange").addEventListener("click", function () {
+        var path = document.getElementById("amdPath").value;
+        changePath("reLive", path);
+    });
+    document.getElementById("obsChange").addEventListener("click", function () {
+        var path = document.getElementById("obsPath").value;
+        changePath("obs", path);
+    });
+    document.getElementById("openDataFolder").addEventListener("click", function () {
+        window.electron.openDataFolder();
+    });
+
+    function changePath(service, path) {
+        window.electron.updateClipPath(service, path);
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        window.electron.getClipPath();
+        window.electron.onGetClipPath((data) => {
+            if (data.error) {
+                console.error(data.error);
+                return;
+            }
+            document.getElementById("medalPath").value = data.medalPath || '';
+            document.getElementById("nvidiaPath").value = data.shadowplayPath || '';
+            document.getElementById("amdPath").value = data.reLivePath || '';
+            document.getElementById("obsPath").value = data.obsPath || '';
+        });
+        window.electron.getAppInfo();
+        window.electron.onGetAppInfo((data) => {
+            document.getElementById("appinfo").innerText = `V${data.version}`;
+        });
+    });
+</script>
+</html>

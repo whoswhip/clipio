@@ -1,0 +1,47 @@
+{
+  "name": "clipio",
+  "version": "1.1.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "package": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "author": "whoswhip",
+  "license": "ISC",
+  "description": "Easily view all of your clips!",
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^24.6.4"
+  },
+  "dependencies": {
+    "ffmpeg-static": "^5.2.0",
+    "fluent-ffmpeg": "^2.1.3",
+    "ffprobe-static": "^3.1.0"
+  },
+  "build": {
+    "appId": "com.whoswhip.clipio",
+    "productName": "Clipio",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "node_modules/ffmpeg-static/ffmpeg.exe",
+        "to": "ffmpeg.exe"
+      },
+      {
+        "from": "node_modules/ffprobe-static/bin/win32/x64/ffprobe.exe",
+        "to": "ffprobe.exe"
+      }
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon-x16.ico"
+    }
+  }
+}
