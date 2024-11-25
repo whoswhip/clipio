@@ -1,9 +1,14 @@
-const { app, BrowserWindow, ipcMain, shell, clipboard } = require('electron');
+const { app, BrowserWindow, ipcMain, shell, clipboard, Notification, dialog } = require('electron');
+const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const fs = require('fs');
 const ffmpeg = require('fluent-ffmpeg');
 const ffprobeStatic = require('ffprobe-static');
 const ffmpegStatic = require('ffmpeg-static');
+const { exec } = require('child_process');
+
+app.name = 'Clipio';
+app.setAppUserModelId('com.whoswhip.clipio');
 
 const ffmpegPath = app.isPackaged
     ? path.join(process.resourcesPath, 'ffmpeg.exe')
@@ -29,12 +34,18 @@ app.on('ready', () => {
             preload: path.join(__dirname, 'preload.js'),
             contextIsolation: true,
             enableRemoteModule: false,
+            nodeIntegration: true,
         },
         icon: path.join(__dirname, 'build/icon-x16.png'),
     });
     win.setMenuBarVisibility(false);
     win.loadFile('web/index.html');
-    //checkForUpdate();
+    checkForUpdate();
+
+});
+
+app.on('window-all-closed', () => {
+    app.quit();
 });
 
 const configPath = path.join(app.getPath('userData'), 'config.json');
@@ -51,34 +62,36 @@ if (!fs.existsSync(clipDatabasePath)) {
     fs.writeFileSync(clipDatabasePath, '[]');
 }
 
+function checkForUpdate() {
+    autoUpdater.checkForUpdatesAndNotify();
+}
 
-// function checkForUpdate(){
-//     const baseurl = 'https://clipio.whoswhip.top';
-//     const { net } = require('electron');
-//     const request = net.request(`${baseurl}/version.txt`);
-//     request.on('response', (response) => {
-//         response.on('data', (chunk) => {
-//             const latestVersion = chunk.toString();
-//             if (latestVersion !== app.getVersion()) {
-//                 win.webContents.send('update-available', latestVersion);
-//             }
-//         });
-//     });
-// }
-// function updateApp(){
-//     const baseurl = 'https://clipio.whoswhip.top';
-//     const { net } = require('electron');
-//     const request = net.request(`${baseurl}/download`);
-//     request.on('response', (response) => {
-//         const filePath = path.join(app.getPath('downloads'), 'clipio-setup.exe');
-//         const fileStream = fs.createWriteStream(filePath);
-//         response.pipe(fileStream);
-//         response.on('end', () => {
-//             shell.openPath(filePath);
-//         });
-//     });
-//     request.end();
-// }
+autoUpdater.on('update-available', () => {
+    win.webContents.send('update-available');
+});
+
+autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
+    const dialogOpts = {
+        type: 'info',
+        buttons: ['Restart', 'Later'],
+        title: 'Application Update',
+        message: process.platform === 'win32' ? releaseNotes : releaseName,
+        detail: 'A new version has been downloaded. Restart the application to apply the updates.'
+    };
+
+    dialog.showMessageBox(dialogOpts).then((returnValue) => {
+        if (returnValue.response === 0) autoUpdater.quitAndInstall();
+    });
+});
+
+autoUpdater.on('error', (message) => {
+    console.error('There was a problem updating the application');
+    console.error(message);
+});
+
+ipcMain.on('update-app', () => {
+    autoUpdater.quitAndInstall();
+});
 
 
 function scanFolder(folderPath, extensions, recursive = true) {
@@ -391,6 +404,7 @@ ipcMain.on('get-games', async (event) => {
         const clipData = JSON.parse(fs.readFileSync(clipDatabasePath, 'utf-8'));
         const games = clipData.map(clip => clip.game);
         const uniqueGames = [...new Set(games)];
+        uniqueGames.sort();
         event.reply('get-games-success', uniqueGames);
     } catch (error) {
         event.reply('get-games-error', `Error getting games: ${error.message}`);

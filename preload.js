@@ -26,4 +26,7 @@ contextBridge.exposeInMainWorld('electron', {
     search: (query) => ipcRenderer.send('search', query),
     onSearchSuccess: (callback) => ipcRenderer.on('search-success', (event, data) => callback(data)),
     onSearchError: (callback) => ipcRenderer.on('search-error', (event, message) => callback(message)),
+    updateApp: () => ipcRenderer.send('update-app'),
+    onUpdateAvailable: (callback) => ipcRenderer.on('update-available', callback),
+    openUrl: (url) => ipcRenderer.send('open-external', url),
 });

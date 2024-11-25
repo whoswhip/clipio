@@ -6,53 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings</title>
 </head>
-
-<body>
-    <div class="sortation-bar">
-        <a id="settings-button" href="index.html">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-film" viewBox="0 0 16 16">
-                <path
-                    d="M0 1a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm4 0v6h8V1zm8 8H4v6h8zM1 1v2h2V1zm2 3H1v2h2zM1 7v2h2V7zm2 3H1v2h2zm-2 3v2h2v-2zM15 1h-2v2h2zm-2 3v2h2V4zm2 3h-2v2h2zm-2 3v2h2v-2zm2 3h-2v2h2z" />
-            </svg>
-        </a>
-        <p id="appinfo" style="margin-left: auto;">v1</p>
-    </div>
-    <div class="settings-container">
-        <li>
-            <label for="medalPath">Medal.tv Clip Root Directory</label>
-            <div>
-                <input type="text" id="medalPath" name="medalPath" placeholder="C:\Users\Username\Videos\Medal.tv">
-                <button class="text-change" id="MedalChange">Change</button>
-            </div>
-        </li>
-        <li>
-            <label for="nvidiaPath">NVIDIA Shadowplay Clip Root Directory</label>
-            <div>
-                <input type="text" id="nvidiaPath" name="nvidiaPath" placeholder="C:\Users\Username\Videos\Shadowplay">
-                <button class="text-change" id="ShadowplayChange">Change</button>
-            </div>
-        </li>
-        <li>
-            <label for="amdPath">AMD ReLive Clip Root Directory</label>
-            <div>
-                <input type="text" id="amdPath" name="amdPath" placeholder="C:\Users\Username\Videos\ReLive">
-                <button class="text-change" id="ReLiveChange">Change</button>
-            </div>
-        </li>
-        <li>
-            <label for="obsPath">OBS Video Directory</label>
-            <p>OBS will NOT scan sub-directories and will only scan the folder you input.</p>
-            <div>
-                <input type="text" id="obsPath" name="obsPath" placeholder="C:\Users\Username\Videos\OBS">
-                <button class="text-change" id="obsChange">Change</button>
-            </div>
-        </li>
-        <li>
-            <label for="openDataFolder">Open Data Folder</label>
-            <button class="full-button" id="openDataFolder">Open</button>
-        </li>
-    </div>
-</body>
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
 
@@ -160,7 +113,8 @@
         align-items: flex-start;
         overflow-y: auto;
     }
-    input{
+
+    input {
         background-color: #171717;
         color: white;
         border: 1px solid #333;
@@ -170,16 +124,19 @@
         transition: 0.3s background-color;
         width: calc(100% - 100px);
     }
-    input:focus{
+
+    input:focus {
         outline: none;
         background-color: #1e1e1e;
         box-shadow: 0 0 1px #2a2a2a;
         transition: 0.3s;
     }
-    .text-change{
+
+    .text-change {
         width: fit-content;
     }
-    button{
+
+    button {
         background-color: #171717;
         color: white;
         border: none;
@@ -190,11 +147,13 @@
         transition: 0.3s background-color;
         border: 1px solid #333;
     }
-    button:hover{
+
+    button:hover {
         background-color: #1e1e1e;
         box-shadow: 0 0 1px #2a2a2a;
         transition: 0.3s;
     }
+
     li {
         list-style-type: none;
         margin-bottom: 20px;
@@ -206,18 +165,93 @@
         width: 100%;
         border: 1px solid #333;
     }
-    li div{
+
+    li div {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
     }
+
     li p {
         font-size: smaller;
         font-weight: 600;
         color: #999;
     }
+
+    .bmc-container {
+        margin-top: auto;
+        text-align: center;
+        align-self: center;
+        margin-bottom: 20px;
+    }
+
+    #madeby {
+        text-decoration: underline;
+    }
+
+    #madeby:hover {
+        cursor: pointer;
+    }
 </style>
+
+<body>
+    <div class="sortation-bar">
+        <a id="settings-button" href="index.html">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-film" viewBox="0 0 16 16"
+                width="20" height="20">
+                <path
+                    d="M0 1a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm4 0v6h8V1zm8 8H4v6h8zM1 1v2h2V1zm2 3H1v2h2zM1 7v2h2V7zm2 3H1v2h2zm-2 3v2h2v-2zM15 1h-2v2h2zm-2 3v2h2V4zm2 3h-2v2h2zm-2 3v2h2v-2zm2 3h-2v2h2z" />
+            </svg>
+        </a>
+        <p id="appinfo" style="margin-left: auto;">v1</p>
+    </div>
+    <div class="settings-container">
+        <li>
+            <label for="medalPath">Medal.tv Clip Root Directory</label>
+            <div>
+                <input type="text" id="medalPath" name="medalPath" placeholder="C:\Users\Username\Videos\Medal.tv">
+                <button class="text-change" id="MedalChange">Change</button>
+            </div>
+        </li>
+        <li>
+            <label for="nvidiaPath">NVIDIA Shadowplay Clip Root Directory</label>
+            <div>
+                <input type="text" id="nvidiaPath" name="nvidiaPath" placeholder="C:\Users\Username\Videos\Shadowplay">
+                <button class="text-change" id="ShadowplayChange">Change</button>
+            </div>
+        </li>
+        <li>
+            <label for="amdPath">AMD ReLive Clip Root Directory</label>
+            <div>
+                <input type="text" id="amdPath" name="amdPath" placeholder="C:\Users\Username\Videos\ReLive">
+                <button class="text-change" id="ReLiveChange">Change</button>
+            </div>
+        </li>
+        <li>
+            <label for="obsPath">OBS Video Directory</label>
+            <p>OBS will NOT scan sub-directories and will only scan the folder you input.</p>
+            <div>
+                <input type="text" id="obsPath" name="obsPath" placeholder="C:\Users\Username\Videos\OBS">
+                <button class="text-change" id="obsChange">Change</button>
+            </div>
+        </li>
+        <li>
+            <label for="openDataFolder">Open Data Folder</label>
+            <button class="full-button" id="openDataFolder">Open</button>
+        </li>
+        <div class="bmc-container">
+            <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js"
+                data-name="bmc-button" data-slug="whoswhip" data-color="#333" data-emoji="" data-font="Inter"
+                data-text="Support Clipio's Development" data-outline-color="#ffffff" data-font-color="#ffffff"
+                data-coffee-color="#FFDD00">
+                </script>
+        </div>
+        <p style="text-align: center; align-self: center;">Made with ❤️ by <a id="madeby"
+                style="text-decoration: underline;">whoswhip</a></p>
+    </div>
+</body>
+
 <script>
     document.getElementById("settings-button").addEventListener("click", function () {
         window.location.href = "index.html";
@@ -261,6 +295,16 @@
         window.electron.onGetAppInfo((data) => {
             document.getElementById("appinfo").innerText = `V${data.version}`;
         });
+        const bmcbtn = document.querySelector('.bmc-btn');
+        bmcbtn.removeAttribute('href');
+
+    });
+    document.querySelector('.bmc-btn').addEventListener('click', () => {
+        window.electron.openUrl('https://www.buymeacoffee.com/whoswhip');
+    });
+    document.getElementById("madeby").addEventListener("click", function () {
+        window.electron.openUrl("https://whoswhip.top");
     });
 </script>
+
 </html>
