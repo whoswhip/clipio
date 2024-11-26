@@ -5,7 +5,7 @@ const fs = require('fs');
 const ffmpeg = require('fluent-ffmpeg');
 const ffprobeStatic = require('ffprobe-static');
 const ffmpegStatic = require('ffmpeg-static');
-const { exec } = require('child_process');
+const url = require('url');
 
 app.name = 'Clipio';
 app.setAppUserModelId('com.whoswhip.clipio');
@@ -40,12 +40,17 @@ app.on('ready', () => {
     });
     win.setMenuBarVisibility(false);
     win.loadFile('web/index.html');
-    checkForUpdate();
-
+    autoUpdater.checkForUpdatesAndNotify();
 });
 
 app.on('window-all-closed', () => {
     app.quit();
+});
+
+Object.defineProperty(app, 'isPackaged', {
+    get() {
+        return true;
+    }
 });
 
 const configPath = path.join(app.getPath('userData'), 'config.json');
@@ -60,10 +65,6 @@ if (!fs.existsSync(configPath)) {
 }
 if (!fs.existsSync(clipDatabasePath)) {
     fs.writeFileSync(clipDatabasePath, '[]');
-}
-
-function checkForUpdate() {
-    autoUpdater.checkForUpdatesAndNotify();
 }
 
 autoUpdater.on('update-available', () => {
@@ -447,4 +448,25 @@ ipcMain.on('get-appinfo', (event) => {
         version: app.getVersion(),
         name: app.getName(),
     });
+});
+
+ipcMain.on('delete-clip', (event, filePath) => {
+    try {
+        if (filePath.startsWith('file:')) {
+            filePath = url.fileURLToPath(filePath);
+        }
+
+        fs.unlinkSync(filePath);
+        let clipdata = JSON.parse(fs.readFileSync(clipDatabasePath, 'utf-8'));
+        let thumbnailPath = path.join(thumbnailCachePath, path.basename(filePath, path.extname(filePath)) + '.jpg');
+        clipdata = clipdata.filter(clip => clip.file !== filePath);
+        fs.writeFileSync(clipDatabasePath, JSON.stringify(clipdata, null, 2));
+        if (fs.existsSync(thumbnailPath)) {
+            fs.unlinkSync(thumbnailPath);
+        }
+        event.reply('delete-clip-success', 'Clip deleted successfully!');
+    } catch (error) {
+        console.error("Error deleting clip:", error);
+        event.reply('delete-clip-error', `Error deleting clip: ${error.message}`);
+    }
 });

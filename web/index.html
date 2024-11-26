@@ -327,16 +327,6 @@
         <input id="search" type="text" placeholder="Search for clips...">
     </div>
     <div class="clips">
-        <div class="lds-roller">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
     </div>
 
     <div class="modal" style="display: none;">
@@ -649,6 +639,11 @@
             entries.forEach(entry => {
                 const clip = entry.target;
                 const dataSrc = clip.getAttribute('data-src');
+
+                if (!videos.includes(clip)) {
+                    return;
+                }
+
                 if (entry.isIntersecting) {
                     if (dataSrc) {
                         clip.src = dataSrc;
@@ -888,6 +883,7 @@
         menu.innerHTML = `
             <ul>
                 <li id="open-clip">Open Clip</li>
+                <li id="delete-clip">Delete Clip</li>
                 <li id="open-location">Open File Location</li>
                 <li id="copy-path">Copy Full Path</li>
             </ul>
@@ -907,9 +903,30 @@
             window.electron.openClip(file);
             menu.remove();
         });
+        document.getElementById('delete-clip').addEventListener('click', () => {
+            if (!window.confirm('Are you sure you want to delete this clip?')) {
+                return;
+            }
 
+            videos = videos.filter(video => video.getAttribute('data-src') !== file);
+            const escapedFile = file.replace(/\\/g, '\\\\');
+            const clip = document.querySelector(`video[data-filepath="${escapedFile}"]`);
+            if (clip) {
+                const container = clip.parentElement;
+                container.remove();
+                clip.remove();
+                console.log('Deleted clip:', file);
+            } else {
+                console.error('No video found with data-filepath:', file);
+            }
+
+            menu.remove();
+        });
+        
         return menu;
     }
+
+
 
     function handleContextMenu(event, file) {
         event.preventDefault();
@@ -937,6 +954,8 @@
         const updateDiv = document.getElementById('update-available-div');
         updateDiv.style.display = 'flex';
     });
+
+
 </script>
 <style>
     .lds-roller,

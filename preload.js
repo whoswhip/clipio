@@ -29,4 +29,7 @@ contextBridge.exposeInMainWorld('electron', {
     updateApp: () => ipcRenderer.send('update-app'),
     onUpdateAvailable: (callback) => ipcRenderer.on('update-available', callback),
     openUrl: (url) => ipcRenderer.send('open-external', url),
+    deleteClip: (service) => ipcRenderer.send('delete-clip', service),
+    onDeleteClipSuccess: (callback) => ipcRenderer.on('delete-clip-success', (event, message) => callback(message)),
+    onDeleteClipError: (callback) => ipcRenderer.on('delete-clip-error', (event, message) => callback(message)),
 });
