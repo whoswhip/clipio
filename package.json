@@ -10,7 +10,7 @@
     "deploy": "node build-and-deploy.js"
   },
   "author": "whoswhip",
-  "license": "d",
+  "license": "ISC",
   "description": "Easily view all of your clips!",
   "devDependencies": {
     "electron": "^33.2.0",
