@@ -32,4 +32,7 @@ contextBridge.exposeInMainWorld('electron', {
     deleteClip: (service) => ipcRenderer.send('delete-clip', service),
     onDeleteClipSuccess: (callback) => ipcRenderer.on('delete-clip-success', (event, message) => callback(message)),
     onDeleteClipError: (callback) => ipcRenderer.on('delete-clip-error', (event, message) => callback(message)),
+    copyClip: (service) => ipcRenderer.send('copy-clip-to-clipboard', service),
+    onCopyClipSuccess: (callback) => ipcRenderer.on('copy-clip-to-clipboard-success', (event, message) => callback(message)),
+    onCopyClipError: (callback) => ipcRenderer.on('copy-clip-to-clipboard-error', (event, message) => callback(message)),
 });

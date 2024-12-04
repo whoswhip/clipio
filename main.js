@@ -189,53 +189,47 @@ async function updateClipDatabase(folderPath, service) {
 }
 async function scanForNew() {
     try {
-        const configData = JSON.parse(await fs.promises.readFile(configPath, 'utf-8'));
-        let clipData = [];
-        if (await fs.promises.stat(clipDatabasePath).catch(() => false)) {
-            const _data = await fs.promises.readFile(clipDatabasePath, 'utf-8');
-            if (_data) {
-                clipData = JSON.parse(_data);
-            }
-        }
+        const [configContent, clipContent] = await Promise.all([
+            fs.promises.readFile(configPath, 'utf-8'),
+            fs.promises.readFile(clipDatabasePath, 'utf-8').catch(() => '[]')
+        ]);
+        const configData = JSON.parse(configContent);
+        let clipData = JSON.parse(clipContent);
 
-        clipData.filter(clip => !fs.existsSync(clip.file));
+        clipData = (await Promise.all(
+            clipData.map(clip =>
+                fs.promises.access(clip.file).then(() => clip).catch(() => null)
+            )
+        )).filter(Boolean);
 
-        const paths = [
-            { path: configData.medalPath, service: 'medal' },
-            { path: configData.shadowplayPath, service: 'shadowplay' },
-            { path: configData.reLivePath, service: 'reLive' },
-            { path: configData.obsPath, service: 'obs' }
-        ].filter(({ path }) => path);
+        const paths = ['medalPath', 'shadowplayPath', 'reLivePath', 'obsPath']
+            .map(key => ({ path: configData[key], service: key.replace('Path', '').toLowerCase() }))
+            .filter(({ path }) => path);
 
         const allFiles = await Promise.all(
             paths.map(async ({ path, service }) => {
-                if (service === 'obs') {
-                    const files = scanFolder(path, _videoExtensions, false);
-                    return files
-                        .filter(file => !clipData.some(clip => clip.file === file))
-                        .map(file => ({ file, service }));
-                }
-                const files = scanFolder(path, '.mp4');
+                const extensions = service === 'obs' ? _videoExtensions : ['.mp4'];
+                const files = scanFolder(path, extensions, service !== 'obs');
                 return files
                     .filter(file => !clipData.some(clip => clip.file === file))
                     .map(file => ({ file, service }));
             })
         );
 
-        const newFiles = (
-            await Promise.all(
-                allFiles.flat().map(async ({ file, service }) => {
-                    const hasVideo = await hasVideoStream(file);
-                    if (hasVideo) {
-                        const thumbnail = await generateThumbnail(file);
-                        const game = path.basename(path.dirname(file));
-                        const date = new Date((await fs.promises.stat(file)).birthtime).toLocaleString();
-                        return { file, thumbnail, game, date, service };
-                    }
-                    return null;
-                })
-            )
-        ).filter(Boolean);
+        const newFiles = (await Promise.all(
+            allFiles.flat().map(async ({ file, service }) => {
+                if (await hasVideoStream(file)) {
+                    const [thumbnail, stats] = await Promise.all([
+                        generateThumbnail(file),
+                        fs.promises.stat(file)
+                    ]);
+                    const game = path.basename(path.dirname(file));
+                    const date = new Date(stats.birthtime).toISOString();
+                    return { file, thumbnail, game, date, service };
+                }
+                return null;
+            })
+        )).filter(Boolean);
 
         if (newFiles.length > 0) {
             clipData.push(...newFiles);
@@ -253,9 +247,9 @@ ipcMain.on('scan-files', async (event, { start, count, sort, gamefilter }) => {
         const originalData = clipData;
 
         if (sort === 'Newest') {
-            clipData.sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
+            clipData.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
         } else if (sort === 'Oldest') {
-            clipData.sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
+            clipData.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
         } else if (['Shadowplay', 'Medal', 'ReLive', 'OBS'].includes(sort)) {
             console.log('sort:', sort);
             clipData = await filterByService(clipData, sort.toLowerCase(), configData);
@@ -265,7 +259,6 @@ ipcMain.on('scan-files', async (event, { start, count, sort, gamefilter }) => {
             clipData = clipData.filter(clip => clip.game === gamefilter);
         }
 
-
         const totalClips = clipData.length;
         const paginatedFiles = await processThumbnails(clipData.slice(start, start + count));
         for (const file of paginatedFiles) {
@@ -273,8 +266,6 @@ ipcMain.on('scan-files', async (event, { start, count, sort, gamefilter }) => {
                 originalData.splice(originalData.findIndex(clip => clip.file === file.file), 1);
             }
         }
-
-        await fs.promises.writeFile(clipDatabasePath, JSON.stringify(originalData, null, 2));
 
         event.reply('scan-files-success', { files: paginatedFiles, totalClips });
     } catch (error) {
@@ -455,6 +446,7 @@ ipcMain.on('delete-clip', (event, filePath) => {
         if (filePath.startsWith('file:')) {
             filePath = url.fileURLToPath(filePath);
         }
+        console.log("Deleting clip:", filePath);
 
         fs.unlinkSync(filePath);
         let clipdata = JSON.parse(fs.readFileSync(clipDatabasePath, 'utf-8'));
@@ -464,6 +456,7 @@ ipcMain.on('delete-clip', (event, filePath) => {
         if (fs.existsSync(thumbnailPath)) {
             fs.unlinkSync(thumbnailPath);
         }
+
         event.reply('delete-clip-success', 'Clip deleted successfully!');
     } catch (error) {
         console.error("Error deleting clip:", error);

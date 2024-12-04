@@ -43,39 +43,25 @@
         padding: 5px;
     }
 
-    @media (min-width: 1400px) {
-        .clips {
-            grid-template-columns: repeat(6, 1fr);
-        }
-    }
 
-    @media (max-width: 1399px) and (min-width: 1200px) {
+    @media  (min-width: 1200px) {
         .clips {
-            grid-template-columns: repeat(5, 1fr);
+            grid-template-columns: repeat(6,  minmax(200px, 1fr));
+            grid-template-rows: repeat(6, 1fr);
         }
     }
 
     @media (max-width: 1199px) and (min-width: 1000px) {
         .clips {
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(3,  minmax(200px, 1fr));
+            grid-template-rows: repeat(3, 1fr);
         }
     }
 
-    @media (max-width: 999px) and (min-width: 800px) {
-        .clips {
-            grid-template-columns: repeat(3, 1fr);
-        }
-    }
-
-    @media (max-width: 799px) and (min-width: 600px) {
+    @media (max-width: 999px) {
         .clips {
             grid-template-columns: repeat(2, 1fr);
-        }
-    }
-
-    @media (max-width: 599px) {
-        .clips {
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
         }
     }
 
@@ -139,6 +125,7 @@
     }
 
     .modal-content {
+        border-radius: 10px;
         position: relative;
         max-width: 90%;
         max-height: 90%;
@@ -150,6 +137,8 @@
     #modalVideo {
         width: 100%;
         height: auto;
+        border-radius: 5px;
+        border: 1px solid #333;
     }
 
     .sortation-bar {
@@ -158,6 +147,7 @@
         border-bottom: 1px solid #333;
         width: 100%;
         padding: 20px;
+        /*app-region: drag;*/
     }
 
     .sortation-bar button {
@@ -281,6 +271,9 @@
     .update-available-div:hover {
         background-color: #1a9c48;
         transition: 0.3s background-color;
+    }
+    p,label{
+        user-select: none;
     }
 </style>
 
@@ -535,12 +528,14 @@
                 const clipContainer = document.createElement('div');
                 clipContainer.classList.add('clip-container');
 
+                const localdate = new Date(date).toLocaleDateString();
+
                 const clip = document.createElement('video');
                 clip.classList.add('clip');
                 clip.setAttribute('data-src', file);
                 clip.setAttribute('preload', 'none');
                 clip.setAttribute('poster', thumbnail);
-                clip.setAttribute('title', `${game} - ${date}`);
+                clip.setAttribute('title', `${game} - ${localdate}`);
                 clip.setAttribute('data-game', game);
                 clip.setAttribute('data-date', date);
                 clip.setAttribute('data-service', service);
@@ -579,13 +574,6 @@
                     if (event.target === modal) {
                         modal.style.display = 'none';
                         modalVideo.pause();
-                    } else if (event.target === modalVideo) {
-                        event.stopPropagation();
-                        if (modalVideo.paused) {
-                            modalVideo.play();
-                        } else {
-                            modalVideo.pause();
-                        }
                     }
                 });
             });
@@ -915,6 +903,7 @@
                 const container = clip.parentElement;
                 container.remove();
                 clip.remove();
+                window.electron.deleteClip(file);
                 console.log('Deleted clip:', file);
             } else {
                 console.error('No video found with data-filepath:', file);
@@ -922,7 +911,7 @@
 
             menu.remove();
         });
-        
+
         return menu;
     }
 
