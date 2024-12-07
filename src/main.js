@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, shell, clipboard, Notification, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, shell, clipboard, Notification, dialog, ipcRenderer } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const fs = require('fs');
@@ -36,10 +36,10 @@ app.on('ready', () => {
             enableRemoteModule: false,
             nodeIntegration: true,
         },
-        icon: path.join(__dirname, 'build/icon-x16.png'),
+        icon: path.join(__dirname, 'src/build/icon-x16.png'),
     });
     win.setMenuBarVisibility(false);
-    win.loadFile('web/index.html');
+    win.loadFile('src/web/index.html');
     autoUpdater.checkForUpdatesAndNotify();
 });
 

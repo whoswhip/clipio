@@ -44,21 +44,21 @@
     }
 
 
-    @media  (min-width: 1200px) {
+    @media (min-width: 1200px) {
         .clips {
-            grid-template-columns: repeat(6,  minmax(200px, 1fr));
+            grid-template-columns: repeat(6, minmax(200px, 1fr));
             grid-template-rows: repeat(6, 1fr);
         }
     }
 
     @media (max-width: 1199px) and (min-width: 1000px) {
         .clips {
-            grid-template-columns: repeat(3,  minmax(200px, 1fr));
-            grid-template-rows: repeat(3, 1fr);
+            grid-template-columns: repeat(4, minmax(200px, 1fr));
+            grid-template-rows: repeat(4, 1fr);
         }
     }
 
-    @media (max-width: 999px) {
+    @media (max-width: 599px) {
         .clips {
             grid-template-columns: repeat(2, 1fr);
             grid-template-rows: repeat(2, 1fr);
@@ -272,7 +272,9 @@
         background-color: #1a9c48;
         transition: 0.3s background-color;
     }
-    p,label{
+
+    p,
+    label {
         user-select: none;
     }
 </style>
@@ -465,6 +467,7 @@
     let gamefilter = 'All';
     let searchTimeout;
     let resizeTimeout;
+    let observer;
 
     function calculateClipDimensions() {
         const tempClip = document.createElement('div');
@@ -502,6 +505,8 @@
 
     async function loadClips() {
         if (isScanning || start >= totalClips) {
+            console.log('Already scanning or no more clips to load');
+            console.log('Start:', start, 'Total:', totalClips);
             return;
         }
 
@@ -578,7 +583,7 @@
                 });
             });
             clipsContainer.appendChild(fragment);
-            start += count;
+            start = videos.length;
             observeClips();
 
             isScanning = false;
@@ -623,7 +628,10 @@
 
     function observeClips() {
         const clips = document.querySelectorAll('.clip');
-        const observer = new IntersectionObserver((entries, observer) => {
+        if (observer) {
+            observer.disconnect();
+        }
+        observer = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 const clip = entry.target;
                 const dataSrc = clip.getAttribute('data-src');
@@ -785,15 +793,15 @@
         const spinner = document.createElement('div');
         spinner.classList.add('lds-roller');
         spinner.innerHTML = `
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-        `;
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    `;
         clips.appendChild(spinner);
     }
 
@@ -869,13 +877,13 @@
         const menu = document.createElement('div');
         menu.classList.add('context-menu');
         menu.innerHTML = `
-            <ul>
-                <li id="open-clip">Open Clip</li>
-                <li id="delete-clip">Delete Clip</li>
-                <li id="open-location">Open File Location</li>
-                <li id="copy-path">Copy Full Path</li>
-            </ul>
-        `;
+        <ul>
+            <li id="open-clip">Open Clip</li>
+            <li id="delete-clip">Delete Clip</li>
+            <li id="open-location">Open File Location</li>
+            <li id="copy-path">Copy Full Path</li>
+        </ul>
+    `;
         document.body.appendChild(menu);
 
         document.getElementById('open-location').addEventListener('click', () => {
@@ -915,8 +923,6 @@
         return menu;
     }
 
-
-
     function handleContextMenu(event, file) {
         event.preventDefault();
 
@@ -931,20 +937,25 @@
         }
 
         const menu = createContextMenu(file);
-        menu.style.top = `${event.clientY}px`;
-        menu.style.left = `${event.clientX}px`;
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+        const menuWidth = menu.clientWidth;
+        const menuHeight = menu.clientHeight;
+
+        let x = event.clientX;
+        let y = event.clientY;
+
+        if (x + menuWidth > windowWidth) {
+            x = windowWidth - menuWidth - (menuWidth / 8);
+        }
+
+        if (y + menuHeight > windowHeight) {
+            y = windowHeight - menuHeight - (menuHeight / 8);
+        }
+
+        menu.style.left = `${x}px`;
+        menu.style.top = `${y}px`;
     }
-
-    document.getElementById('update-available-div').addEventListener('click', () => {
-        window.electron.updateApp();
-    });
-
-    window.electron.onUpdateAvailable(() => {
-        const updateDiv = document.getElementById('update-available-div');
-        updateDiv.style.display = 'flex';
-    });
-
-
 </script>
 <style>
     .lds-roller,

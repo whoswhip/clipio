@@ -1,38 +1,148 @@
 const { contextBridge, ipcRenderer } = require('electron');
+ipcRenderer.setMaxListeners(20);
 
 contextBridge.exposeInMainWorld('electron', {
     scanFiles: (params) => ipcRenderer.send('scan-files', params),
-    onScanFilesSuccess: (callback) => ipcRenderer.on('scan-files-success', (event, files) => callback(files)),
-    onScanFilesError: (callback) => ipcRenderer.on('scan-files-error', (event, message) => callback(message)),
+    onScanFilesSuccess: (callback) => {
+        const listener = (event, message) => {
+            callback(message);
+            ipcRenderer.removeListener('scan-files-success', listener);
+        };
+        ipcRenderer.on('scan-files-success', listener);
+    },
+    onScanFilesError: (callback) => {
+        const listener = (event, message) => {
+            callback(message);
+            ipcRenderer.removeListener('scan-files-error', listener);
+        };
+        ipcRenderer.on('scan-files-error', listener);
+    },
     scanForNewFiles: () => ipcRenderer.send('scan-for-new'),
-    onScanForNewFilesSuccess: (callback) => ipcRenderer.on('scan-for-new-success', (event, message) => callback(message)),
-    onScanForNewFilesError: (callback) => ipcRenderer.on('scan-for-new-error', (event, message) => callback(message)),
+    onScanForNewFilesSuccess: (callback) => {
+        const listener = (event, message) => {
+            callback(message);
+            ipcRenderer.removeListener('scan-for-new-success', listener);
+        };
+        ipcRenderer.on('scan-for-new-success', listener);
+    },
+    onScanForNewFilesError: (callback) => {
+        const listener = (event, message) => {
+            callback(message);
+            ipcRenderer.removeListener('scan-for-new-error', listener);
+        };
+        ipcRenderer.on('scan-for-new-error', listener);
+    },
     getGames: () => ipcRenderer.send('get-games'),
-    onGetGamesSuccess: (callback) => ipcRenderer.on('get-games-success', (event, games) => callback(games)),
-    onGetGamesError: (callback) => ipcRenderer.on('get-games-error', (event, message) => callback(message)),
+    onGetGamesSuccess: (callback) => {
+        const listener = (event, games) => {
+            callback(games);
+            ipcRenderer.removeListener('get-games-success', listener);
+        };
+        ipcRenderer.on('get-games-success', listener);
+    },
+    onGetGamesError: (callback) => {
+        const listener = (event, message) => {
+            callback(message);
+            ipcRenderer.removeListener('get-games-error', listener);
+        };
+        ipcRenderer.on('get-games-error', listener);
+    },
     openFileLocation: (filePath) => ipcRenderer.send('open-file-location', filePath),
     copyToClipboard: (text) => ipcRenderer.send('copy-to-clipboard', text),
     getClipPath: () => ipcRenderer.send('get-clip-path'),
-    onGetClipPathSuccess: (callback) => ipcRenderer.on('get-clip-path-success', (event, path) => callback(path)),
-    onGetClipPathError: (callback) => ipcRenderer.on('get-clip-path-error', (event, message) => callback(message)),
+    onGetClipPathSuccess: (callback) => {
+        const listener = (event, path) => {
+            callback(path);
+            ipcRenderer.removeListener('get-clip-path-success', listener);
+        };
+        ipcRenderer.on('get-clip-path-success', listener);
+    },
+    onGetClipPathError: (callback) => {
+        const listener = (event, message) => {
+            callback(message);
+            ipcRenderer.removeListener('get-clip-path-error', listener);
+        };
+        ipcRenderer.on('get-clip-path-error', listener);
+    },
     updateClipPath: (service, path) => ipcRenderer.send('update-clip-path', { service, path }),
-    onUpdateClipPathSuccess: (callback) => ipcRenderer.on('update-clip-path-success', (event, path) => callback(path)),
-    onUpdateClipPathError: (callback) => ipcRenderer.on('update-clip-path-error', (event, message) => callback(message)),
-    onGetClipPath: (callback) => ipcRenderer.on('get-clip-path', (event, data) => callback(data)), 
+    onUpdateClipPathSuccess: (callback) => {
+        const listener = (event, path) => {
+            callback(path);
+            ipcRenderer.removeListener('update-clip-path-success', listener);
+        };
+        ipcRenderer.on('update-clip-path-success', listener);
+    },
+    onUpdateClipPathError: (callback) => {
+        const listener = (event, message) => {
+            callback(message);
+            ipcRenderer.removeListener('update-clip-path-error', listener);
+        };
+        ipcRenderer.on('update-clip-path-error', listener);
+    },
     openClip: (service) => ipcRenderer.send('open-clip', service),
     openDataFolder: () => ipcRenderer.send('open-data-folder'),
     getAppInfo: () => ipcRenderer.send('get-appinfo'),
-    onGetAppInfo: (callback) => ipcRenderer.on('get-appinfo', (event, data) => callback(data)),
+    onGetAppInfo: (callback) => {
+        const listener = (event, data) => {
+            callback(data);
+            ipcRenderer.removeListener('get-appinfo', listener);
+        };
+        ipcRenderer.on('get-appinfo', listener);
+    },
     search: (query) => ipcRenderer.send('search', query),
-    onSearchSuccess: (callback) => ipcRenderer.on('search-success', (event, data) => callback(data)),
-    onSearchError: (callback) => ipcRenderer.on('search-error', (event, message) => callback(message)),
+    onSearchSuccess: (callback) => {
+        const listener = (event, data) => {
+            callback(data);
+            ipcRenderer.removeListener('search-success', listener);
+        };
+        ipcRenderer.on('search-success', listener);
+    },
+    onSearchError: (callback) => {
+        const listener = (event, message) => {
+            callback(message);
+            ipcRenderer.removeListener('search-error', listener);
+        };
+        ipcRenderer.on('search-error', listener);
+    },
     updateApp: () => ipcRenderer.send('update-app'),
-    onUpdateAvailable: (callback) => ipcRenderer.on('update-available', callback),
+    onUpdateAvailable: (callback) => {
+        const listener = (event) => {
+            callback();
+            ipcRenderer.removeListener('update-available', listener);
+        };
+        ipcRenderer.on('update-available', listener);
+    },
     openUrl: (url) => ipcRenderer.send('open-external', url),
     deleteClip: (service) => ipcRenderer.send('delete-clip', service),
-    onDeleteClipSuccess: (callback) => ipcRenderer.on('delete-clip-success', (event, message) => callback(message)),
-    onDeleteClipError: (callback) => ipcRenderer.on('delete-clip-error', (event, message) => callback(message)),
+    onDeleteClipSuccess: (callback) => {
+        const listener = (event, message) => {
+            callback(message);
+            ipcRenderer.removeListener('delete-clip-success', listener);
+        };
+        ipcRenderer.on('delete-clip-success', listener);
+    },
+    onDeleteClipError: (callback) => {
+        const listener = (event, message) => {
+            callback(message);
+            ipcRenderer.removeListener('delete-clip-error', listener);
+        };
+        ipcRenderer.on('delete-clip-error', listener);
+    },
     copyClip: (service) => ipcRenderer.send('copy-clip-to-clipboard', service),
-    onCopyClipSuccess: (callback) => ipcRenderer.on('copy-clip-to-clipboard-success', (event, message) => callback(message)),
-    onCopyClipError: (callback) => ipcRenderer.on('copy-clip-to-clipboard-error', (event, message) => callback(message)),
+    onCopyClipSuccess: (callback) => {
+        const listener = (event, message) => {
+            callback(message);
+            ipcRenderer.removeListener('copy-clip-to-clipboard-success', listener);
+        };
+        ipcRenderer.on('copy-clip-to-clipboard-success', listener);
+    },
+    onCopyClipError: (callback) => {
+        const listener = (event, message) => {
+            callback(message);
+            ipcRenderer.removeListener('copy-clip-to-clipboard-error', listener);
+        };
+        ipcRenderer.on('copy-clip-to-clipboard-error', listener);
+    },
+    removeListener: (channel, listener) => ipcRenderer.removeListener(channel, listener),
+    removeEveryListenerOnEveryChannel: () => ipcRenderer.removeAllListeners(),
 });
