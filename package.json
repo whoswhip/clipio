@@ -1,7 +1,7 @@
 {
   "name": "clipio",
   "version": "1.2.3",
-  "main": "main.js",
+  "main": "src/main.js",
   "scripts": {
     "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,7 +10,7 @@
     "deploy": "node build-and-deploy.js"
   },
   "author": "whoswhip",
-  "license": "ISC",
+  "license": "GPL-3.0-or-later",
   "description": "Easily view all of your clips!",
   "devDependencies": {
     "electron": "^33.2.0",
@@ -36,7 +36,7 @@
       "output": "dist"
     },
     "files": [
-      "**/*"
+      "src/**/*"
     ],
     "extraResources": [
       {
@@ -50,7 +50,7 @@
     ],
     "win": {
       "target": "nsis",
-      "icon": "build/icon-x16.ico"
+      "icon": "src/build/icon-x16.ico"
     }
   }
 }
