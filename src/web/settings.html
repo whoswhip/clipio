@@ -284,7 +284,7 @@
     }
     document.addEventListener('DOMContentLoaded', () => {
         window.electron.getClipPath();
-        window.electron.onGetClipPath((data) => {
+        window.electron.onGetClipPathSuccess((data) => {
             if (data.error) {
                 console.error(data.error);
                 return;

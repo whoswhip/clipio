@@ -376,10 +376,10 @@ ipcMain.on('get-clip-path', async (event) => {
                 configData = JSON.parse(configFileContent);
             }
         }
-        event.reply('get-clip-path', configData);
+        event.reply('get-clip-path-success', configData);
     } catch (error) {
         console.error("Error getting clip path:", error);
-        event.reply('get-clip-path', { error: `Error getting clip path: ${error.message}` });
+        event.reply('get-clip-path-error', { error: `Error getting clip path: ${error.message}` });
     }
 });
 ipcMain.on('scan-for-new', async (event) => {
