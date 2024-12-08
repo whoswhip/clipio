@@ -373,11 +373,21 @@ function getGames() {
     window.electron.onGetGamesError(onGetGamesError);
 }
 
-document.getElementById('sort').addEventListener('click', () => {
+document.getElementById('sort').addEventListener('click', (event) => {
+    event.stopPropagation();
     const sortSelect = document.getElementById('sort-select');
-    sortSelect.style.display = sortSelect.style.display === 'none' ? 'block' : 'none';
     const gameSelect = document.getElementById('game-select');
-    gameSelect.style.display = 'none';
+
+    if (sortSelect.style.display === 'none' || sortSelect.style.display === '') {
+        sortSelect.style.display = 'block';
+        gameSelect.style.display = 'none';
+    } else {
+        sortSelect.style.display = 'none';
+    }
+});
+
+document.getElementById('sort-select').addEventListener('click', (event) => {
+    event.stopPropagation();
 });
 
 document.getElementById('sort-select').addEventListener('change', () => {
@@ -386,17 +396,28 @@ document.getElementById('sort-select').addEventListener('change', () => {
     videos = [];
     document.querySelector('.clips').innerHTML = '';
     const sortSelect = document.getElementById('sort-select');
-    sortSelect.style.display = sortSelect.style.display === 'none' ? 'block' : 'none';
-    const gameSelect = document.getElementById('game-select');
-    gameSelect.style.display = 'none';
+    sortSelect.style.display = 'none';
     loadClips();
 });
 
-document.getElementById('game-sort').addEventListener('click', () => {
+document.getElementById('game-sort').addEventListener('click', (event) => {
+    event.stopPropagation();
     const gameSelect = document.getElementById('game-select');
-    gameSelect.style.display = gameSelect.style.display === 'none' ? 'block' : 'none';
     const sortSelect = document.getElementById('sort-select');
-    sortSelect.style.display = 'none';
+
+    if (gameSelect.style.display === 'none' || gameSelect.style.display === '') {
+        gameSelect.style.display = 'block';
+        sortSelect.style.display = 'none';
+    } else {
+        gameSelect.style.display = 'none';
+    }
+
+    let x = document.getElementById('game-sort').getBoundingClientRect().left;
+    gameSelect.style.left = `${x}px`;
+});
+
+document.getElementById('game-select').addEventListener('click', (event) => {
+    event.stopPropagation();
 });
 
 document.getElementById('game-select').addEventListener('change', () => {
@@ -409,6 +430,13 @@ document.getElementById('game-select').addEventListener('change', () => {
     document.querySelector('.clips').innerHTML = '';
     gameSelect.style.display = 'none';
     loadClips();
+});
+
+document.addEventListener('click', () => {
+    const sortSelect = document.getElementById('sort-select');
+    const gameSelect = document.getElementById('game-select');
+    sortSelect.style.display = 'none';
+    gameSelect.style.display = 'none';
 });
 
 function createContextMenu(file) {

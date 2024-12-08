@@ -9,6 +9,8 @@
     box-sizing: border-box;
     font-family: 'Inter', sans-serif;
     color: white;
+    scrollbar-width: thin !important;
+    scrollbar-color: #333 #171717 !important;
 }
 
 body {
@@ -135,79 +137,50 @@ body {
 .sortation-bar {
     background-color: #171717;
     display: flex;
+    align-items: center;
     border-bottom: 1px solid #333;
     width: 100%;
-    padding: 20px;
-    /*app-region: drag;*/
+    height: 4rem;
 }
-
-.sortation-bar button {
+.button {
     background-color: #171717;
     color: white;
     border: none;
-    padding: 10px 20px;
-    margin: 0 10px;
     border-radius: 10px;
     cursor: pointer;
     transition: 0.3s background-color;
-}
-
-.sortation-bar button:hover {
-    transition: 0.3s background-color;
-    background-color: #333;
-}
-
-.sortation-bar a {
-    background-color: #171717;
-    color: white;
-    border: none;
-    padding: 10px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
     margin: 0 10px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: 0.3s background-color;
+    height: 2rem;
+    width: 2rem;
 }
-
-.sortation-bar a:hover {
+.button:hover {
     transition: 0.3s background-color;
     background-color: #333;
 }
-
-.sortation-bar p {
-    margin-top: 8px;
-}
-
-.sortation-bar input[type="text"] {
-    margin-left: auto;
+.text-input {
     background-color: #171717;
     color: white;
     border: 1px solid #333;
     padding: 10px;
     border-radius: 10px;
     transition: 0.3s background-color;
+    width: 16rem;
+    height: 2rem;
+    margin-left: auto;
+    margin-right: 10px;
 }
-
-.sortation-bar input[type="text"]:focus {
+.text-input:focus {
     outline: none;
     background-color: #1e1e1e;
     box-shadow: 0 0 1px #2a2a2a;
     transition: 0.3s;
 }
 
-.sortation-bar svg {
-    fill: white;
-    width: 20px;
-    height: 20px;
-}
-
-.separater {
-    border-right: 1px solid #333;
-    width: 1px;
-    height: 30px;
-    margin-right: 15px;
-}
-
-.sortation-bar div select {
+.sortation-bar i select {
     background-color: #171717;
     color: white;
     border: 1px solid #333;
@@ -216,6 +189,24 @@ body {
     transition: 0.3s background-color;
     z-index: 3;
     position: fixed;
+    top: 3rem;
+    scrollbar-width: thin;
+    scrollbar-color: #333 #171717;
+    max-width: 16rem;
+}
+.sortation-bar i select:focus {
+    outline: none;
+    background-color: #1e1e1e;
+    box-shadow: 0 0 1px #2a2a2a;
+    transition: 0.3s;
+}
+.sortation-bar i select option {
+    background-color: #171717;
+    color: white;
+    border: 1px solid #333;
+    padding: 10px;
+    border-radius: 10px;
+    transition: 0.3s background-color;
 }
 
 .context-menu {
